@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversor </title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="converter-container">
+        <h1>Conversor Binario</h1>
+        <br>
+
+        <div class="conversion-controls">
+            <div class="input-group">
+                <label for="conversionType">Tipo de Conversión:</label>
+                <select id="conversionType">
+                    <option value="textToBinary">Texto a Binario</option>
+                    <option value="binaryToText">Binario a Texto</option>
+                    <option value="decimalToBinary">Decimal a Binario</option>
+                    <option value="binaryToDecimal">Binario a Decimal</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="io-fields">
+            <div class="input-group">
+                <label for="inputText">Entrada:</label>
+                <textarea id="inputText" rows="5" placeholder="Escribe aquí..."></textarea>
+            </div>
+            <div class="input-group">
+                <label for="outputText">Salida:</label>
+                <textarea id="outputText" rows="5" readonly placeholder="El resultado aparecerá aquí..."></textarea>
+            </div>
+        </div>
+
+        <button id="convertBtn">Convertir</button>
+    </div>
+
+    <script>
+        //
+        const convertBtn = document.getElementById('convertBtn');
+        const conversionType = document.getElementById('conversionType');
+        const inputText = document.getElementById('inputText');
+        const outputText = document.getElementById('outputText');
+
+        //
+        convertBtn.addEventListener('click', () => {
+            const type = conversionType.value;
+            const input = inputText.value.trim();
+            let result = '';
+
+            if (!input) {
+                outputText.value = 'Por favor, introduce un valor.';
+                return;
+            }
+
+            try {
+                switch (type) {
+                    case 'textToBinary':
+                        result = textToBinary(input);
+                        break;
+                    case 'binaryToText':
+                        result = binaryToText(input);
+                        break;
+                    case 'decimalToBinary':
+                        result = decimalToBinary(input);
+                        break;
+                    case 'binaryToDecimal':
+                        result = binaryToDecimal(input);
+                        break;
+                }
+                outputText.value = result;
+            } catch (error) {
+                outputText.value = `Error: ${error.message}`;
+            }
+        });
+
+        //
+
+        function textToBinary(text) {
+            return text.split('').map(char => char.charCodeAt(0).toString(2).padStart(8, '0')).join(' ');
+        }
+
+        function binaryToText(binary) {
+            if (/[^01\s]/.test(binary)) throw new Error("La entrada binaria solo puede contener 0, 1 y espacios.");
+            return binary.split(' ').map(bin => String.fromCharCode(parseInt(bin, 2))).join('');
+        }
+
+        function decimalToBinary(decimal) {
+            const num = parseInt(decimal, 10);
+            if (isNaN(num)) throw new Error("La entrada debe ser un número decimal válido.");
+            return num.toString(2);
+        }
+
+        function binaryToDecimal(binary) {
+            if (/[^01]/.test(binary)) throw new Error("La entrada binaria solo puede contener 0 y 1 (sin espacios).");
+            return parseInt(binary, 2).toString(10);
+        }
+    </script>
+
+</body>
+</html>
